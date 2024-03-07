@@ -1,0 +1,62 @@
+{% load bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Search Summary</title>
+        {% bootstrap_css %}
+    </head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'searchhistory/style.css' %}">
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="list-group">
+                        <a href="/preferences/" class="list-group-item list-group-item-action ">Preferences</a>
+                        <a href="/userprofile/" class="list-group-item list-group-item-action">Profile</a>
+                        <a href="/searchsummary/" class="list-group-item list-group-item-action">Search Summary</a>
+                        <a href="/searchhistory/"
+                           class="list-group-item list-group-item-action active">Search History</a>
+                        <a href="#" 
+                            onclick="event.preventDefault(); 
+                            logoutAndRedirect('/login/', this.getAttribute('data-logout-url'));" 
+                            data-logout-url="{% url 'logout' %}" 
+                            class="list-group-item list-group-item-action">Logout</a>
+                        <form action="{% url 'logout' %}"
+                              method="POST"
+                              id="logout-form"
+                              style="display:none">
+                            {% csrf_token %}
+                        </form>
+                        <img class="eating-cat-image"
+                             src="https://csc648whereweeatinmeow.s3.us-west-2.amazonaws.com/eatingCat.svg">
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <h2 class="mb-3" style="font-weight: bold;">History</h2>
+                    {% for history in latest_history %}
+                        <li class="row">
+                            <img class="bg-image" src="{{ history.image_url }}">
+                            <div class="styled-container col">
+                                {{ history.restaurant_text }}
+                                <br>
+                                {{ history.creation_datetime }}
+                                <br>
+                                <div class="rating" data-value={{ history.user_rating }}>
+                                </div>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li>No history! Sad meow sounds...</li>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% bootstrap_javascript %}
+        {% load static %}
+        <script type="text/javascript" src="{% static 'searchhistory/logout.js' %}"></script>
+        <script type="text/javascript" src="{% static 'searchhistory/rating.js' %}"></script>
+    </body>
+</html>

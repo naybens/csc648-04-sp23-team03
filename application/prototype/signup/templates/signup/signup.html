@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login Form</title>
+    <style>
+      body {
+        display: flex;
+        height: 100vh;
+        margin: 0;
+      }
+      .column {
+        flex: 1;
+      }
+      .blue-background {
+        background-color: #ae8714;
+        background-image: url("https://csc648whereweeatinmeow.s3.amazonaws.com/background.PNG");
+        background-size: cover;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        padding: 0 20px; /* Added padding to the left and right of the form */
+      }
+
+      /* Add the following styles to your existing <style> block */
+
+      input[type="submit"] {
+        background: linear-gradient(180deg, #e09667 0%, #e69969 100%);
+        box-shadow: inset 1.12159px -1.12159px 5.60793px #dd8b57,
+          inset 0px -1.12159px 2.24317px #e38f5a,
+          inset 0px -1.12159px 2.24317px #e38f5a;
+        border-radius: 15.7022px;
+        color: #ffffff; /* Set the text color to white */
+        font-size: 1.5em; /* Increase the font size */
+        padding: 10px 20px; /* Increase the padding */
+        cursor: pointer; /* Change cursor to pointer when hovering */
+      }
+
+      .username-label {
+        position: relative;
+      }
+
+      .username-input {
+        background-image: url("https://csc648whereweeatinmeow.s3.us-west-2.amazonaws.com/cat-1.png");
+        background-size: 24px;
+        background-position: right 10px center;
+        background-repeat: no-repeat;
+        padding-right: 40px; /* Adjust the padding based on the size of the background image */
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        background: #fff2ea;
+        border: 1px solid #edc8b0;
+        border-radius: 15.7022px;
+        width: 100%;
+        padding: 12px 20px; /* Adjusted the padding to include left and right padding */
+        margin: 10px 0;
+        font-size: 1.5em;
+        box-sizing: border-box;
+      }
+
+      img {
+        display: block;
+        margin: auto;
+        margin-top: 10em;
+        margin-bottom: -15em;
+      }
+
+      /* Modal styles */
+      .modal-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .modal-content {
+        background: linear-gradient(180deg, #e09667 0%, #e69969 100%);
+        box-shadow: inset 1.12159px -1.12159px 5.60793px #dd8b57,
+          inset 0px -1.12159px 2.24317px #e38f5a,
+          inset 0px -1.12159px 2.24317px #e38f5a;
+        border-radius: 15.7022px;
+        background-color: white;
+        color: #ffffff;
+        font-family: "Roboto";
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 16px;
+        padding: 10px 20px;
+        max-width: 400px;
+        text-align: center;
+        cursor: pointer;
+        border: none;
+        max-width: 300px;
+      }
+
+      .modal-content button {
+        background: linear-gradient(180deg, #d57247 0%, #dc7d51 100%);
+        margin-top: 10px;
+        padding: 5px;
+        background-color: #007bff;
+        color: #ffffff;
+        border: white;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="column blue-background"></div>
+    <div class="column">
+      <img
+        src="https://csc648whereweeatinmeow.s3.us-west-2.amazonaws.com/group-19%402x.png"
+        alt="Group 19"
+        class="bottom-right-image"
+      />
+      <form method="post" action="/signup/createuser">
+        {% csrf_token %}
+        <input
+          type="text"
+          id="username"
+          name="username"
+          class="username-input"
+          placeholder="Username"
+          required
+        /><br /><br />
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Email"
+          required
+        /><br /><br />
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Password"
+          required
+        /><br /><br />
+
+        <!-- Add the image at the bottom right corner -->
+
+        <input
+          type="submit"
+          value="SIGN UP MEOW"
+          class="submit-button"
+          onclick="submitForm(event)"
+        />
+      </form>
+    </div>
+
+    <script>
+      function submitForm(event) {
+        event.preventDefault();
+
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0]
+          .value;
+
+        const url = "/signup/createuser/";
+
+        const data = {
+          username: username,
+          email: email,
+          password: password,
+        };
+
+        const options = {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+          },
+        };
+
+        fetch(url, options)
+          .then((response) => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              return response.json().then((data) => {
+                throw new Error(data.error);
+              });
+            }
+          })
+          .then((data) => {
+            document.cookie = `sessionid=${data.session_key}; path=/`; // Store the session key in a cookie
+            window.location = "/preferences/"; // Redirect to the preferences page
+          })
+          .catch((error) => {
+            const modalContainer = document.createElement("div");
+            modalContainer.classList.add("modal-container");
+
+            // Create modal content, text, and close elements
+            const modalContent = document.createElement("div");
+            modalContent.classList.add("modal-content");
+
+            const modalText = document.createElement("p");
+            const errorMessage = error.message.replace(/[\[\]']/g, "");
+            modalText.textContent = errorMessage;
+
+            const closeButton = document.createElement("button");
+            closeButton.textContent = "Close";
+
+            // Append text and close content, content to container
+            modalContent.appendChild(modalText);
+            modalContent.appendChild(closeButton);
+            modalContainer.appendChild(modalContent);
+
+            // Add event listener to close button
+            closeButton.addEventListener("click", () => {
+              modalContainer.remove();
+            });
+
+            document.body.appendChild(modalContainer);
+          });
+      }
+    </script>
+  </body>
+</html>

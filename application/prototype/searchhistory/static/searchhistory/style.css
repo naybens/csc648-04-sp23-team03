@@ -1,0 +1,27 @@
+.styled-container {
+  background: #fae5d7;
+  border-radius: 21px;
+  padding: 15px;
+}
+
+.bg-image {
+  background-size: cover;
+  background-position: center;
+  height: 100px;
+  width: 100px;
+}
+
+.eating-cat-image {
+  margin-top: 1em;
+  height: auto;
+  width: auto;
+}
+
+.lightning-foreground {
+  height: 2rem;
+  width: 2rem;
+}
+.lightning-background {
+  height: 2rem;
+  width: 1.4rem;
+}

@@ -1,0 +1,91 @@
+{% load bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Search Summary</title>
+        {% bootstrap_css %}
+    </head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'searchsummary/style.css' %}">
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="list-group">
+                        <a href="/preferences/" class="list-group-item list-group-item-action ">Preferences</a>
+                        <a href="/userprofile/" class="list-group-item list-group-item-action">Profile</a>
+                        <a href="/searchsummary/"
+                           class="list-group-item list-group-item-action active">Search Summary</a>
+                        <a href="/searchhistory/" class="list-group-item list-group-item-action">Search History</a>
+                        <a href="#" 
+                            onclick="event.preventDefault(); 
+                            logoutAndRedirect('/login/', this.getAttribute('data-logout-url'));" 
+                            data-logout-url="{% url 'logout' %}" 
+                            class="list-group-item list-group-item-action">Logout</a>
+                        <form action="{% url 'logout' %}"
+                              method="POST"
+                              id="logout-form"
+                              style="display:none">
+                            {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <!-- Have to inline here otherwise the image won't show up -->
+                    <div style="background-image: url('{{ restaurant.image_url }}');
+                                background-size: cover;
+                                background-position: center;
+                                height: 300px;
+                                position: relative">
+                        <a href="{{ restaurant.url }}" class="link-below-overlay">
+                            <!-- Blue overlay -->
+                            <div class="overlay"></div>
+                        </a>
+                        <div class="content-wrapper">
+                            <h2 class="mb-3 white-text" style="font-weight: bold;">{{ restaurant.name }}</h2>
+                            <h3 class="white-text">Rating: {{ restaurant.rating }}</h3>
+                            <a class="link-above-overlay google-map-button list-group-item list-group-item"
+                               href="https://www.google.com/maps/search/?api=1&query={{ restaurant.location.address1|urlencode }}+{{ restaurant.location.city|urlencode }}+{{ restaurant.location.zip_code|urlencode }}">Google Map</a>
+                        </div>
+                    </div>
+                    <div class="flex padding-reroll-rating-buttons slight-rounded-borders">
+                        <img src="https://csc648whereweeatinmeow.s3.us-west-2.amazonaws.com/catcup.svg">
+                        <div class="flex color-background-orange info-area-padding">
+                            <div class="center-text">
+                                <p>Reroll</p>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <button class="reroll-button" type="submit" name="reroll">Reroll</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="flex color-background-orange info-area-padding slight-rounded-borders">
+                            <div class="center-text">
+                                <div class="flex">
+                                    <p>Rating</p>
+                                    <img src="https://csc648whereweeatinmeow.s3.us-west-2.amazonaws.com/smolCat.svg">
+                                </div>
+                                {% block content %}
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <button class="image-button" type="submit" name="rating" value="1">1</button>
+                                        <button class="image-button" type="submit" name="rating" value="2">2</button>
+                                        <button class="image-button" type="submit" name="rating" value="3">3</button>
+                                        <button class="image-button" type="submit" name="rating" value="4">4</button>
+                                        <button class="image-button" type="submit" name="rating" value="5">5</button>
+                                    </form>
+                                {% endblock %}
+                            </div>
+                        </div>
+                        {% bootstrap_javascript %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% load static %}
+        <script src="{% static 'searchsummary/logout.js' %}"></script>
+        <script src="{% static 'searchsummary/hover.js' %}"></script>
+    </body>
+</html>

@@ -1,0 +1,328 @@
+{% load bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Search Page</title>
+      {% bootstrap_css %}
+      <style>
+         .custom-button:checked + .custom-label {
+         background: linear-gradient(180deg, #E38F5A 0%, #E09667 100%);
+         }
+         .custom-label {
+         background: linear-gradient(180deg, #E09667 0%, #E69969 100%);
+         box-shadow: inset 1.12159px -1.12159px 5.60793px #DD8B57, inset 0px -1.12159px 2.24317px #E38F5A, inset 0px -1.12159px 2.24317px #E38F5A;
+         border-radius: 15.7022px;
+         color: #ffffff;
+         font-family: 'Roboto';
+         font-style: normal;
+         font-weight: 700;
+         font-size: 14px;
+         line-height: 16px;
+         display: flex;
+         align-items: center;
+         padding: 10px 20px;
+         cursor: pointer;
+         border: none;
+         margin-bottom: 10px;
+         }
+         .styled-container {
+         background: #FAE5D7;
+         border-radius: 21px;
+         padding: 15px;
+         }
+         .modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+         }
+         .modal-content {
+            background: linear-gradient(180deg, #E09667 0%, #E69969 100%);
+            box-shadow: inset 1.12159px -1.12159px 5.60793px #DD8B57, inset 0px -1.12159px 2.24317px #E38F5A, inset 0px -1.12159px 2.24317px #E38F5A;
+            border-radius: 15.7022px;
+            color: #ffffff;
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 16px;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            max-width: 300px;
+         }
+         .close-button {
+            background: linear-gradient(180deg, #D57247 0%, #DC7D51 100%);
+            color: #ffffff;
+            border: white;
+            border-radius: 3px;
+            padding: 5px;
+            cursor: pointer;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+      <div class="row">
+      <div class="col-md-2">
+        <div class="list-group">
+            <a href="/preferences/" class="list-group-item list-group-item-action active">Preferences</a>
+            <a href="/userprofile/" class="list-group-item list-group-item-action">Profile</a>
+            <a href="/searchsummary/"
+               class="list-group-item list-group-item-action">Search Summary</a>
+            <a href="/searchhistory/" class="list-group-item list-group-item-action">Search History</a>
+            <a href="#" onclick="event.preventDefault(); 
+               logoutAndRedirect('/login/');" 
+               class="list-group-item list-group-item-action">Logout</a>
+            <form action="{% url 'logout' %}" method="POST" id="logout-form" style="display:none;">
+               {% csrf_token %}
+            </form>
+        </div>
+      </div>
+      <div class="col-md-10">
+      <div class="row">
+      <!-- Restaurants -->
+      <div class="col-md-4">
+         <div class="styled-container">
+            <label for="selectedRestaurants" class="form-label text-center" style="font-size: 24px; color: #000000; font-weight: bold; display: block;">Restaurants</label>
+            <div id="selectedRestaurants" class="button-group">
+               <!-- Restaurants code here -->
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="" id="newamerican">
+                  <label class="form-check-label custom-label" for="newamerican">
+                  American
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="" id="korean">
+                  <label class="form-check-label custom-label" for="korean">
+                  Korean
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="" id="chinese">
+                  <label class="form-check-label custom-label" for="chinese">
+                  Chinese
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="" id="thai">
+                  <label class="form-check-label custom-label" for="thai">
+                  Thai
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="" id="italian">
+                  <label class="form-check-label custom-label" for="italian">
+                  Italian
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="" id="indian">
+                  <label class="form-check-label custom-label" for="indian">
+                  Indian
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="" id="mexican">
+                  <label class="form-check-label custom-label" for="mexican">
+                  Mexican
+                  </label>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Food Types -->
+      <div class="col-md-4">
+         <div class="styled-container">
+            <label for="selectedFoodTypes" class="form-label text-center" style="font-size: 24px; color: #000000; font-weight: bold; display: block;">Food Types</label>
+            <div id="selectedFoodTypes" class="button-group">
+               <!-- Food Types code here -->
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="vegan" id="vegan">
+                  <label class="form-check-label custom-label" for="vegan">
+                  Vegan
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="vegetarian" id="vegetarian">
+                  <label class="form-check-label custom-label" for="vegetarian">
+                  Vegetarian
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="fried" id="fried">
+                  <label class="form-check-label custom-label" for="fried">
+                  Fried
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="raw_food" id="raw_food">
+                  <label class="form-check-label custom-label" for="raw_food">
+                  Raw
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="bubbletea" id="bubbletea">
+                  <label class="form-check-label custom-label" for="bubbletea">
+                  Boba
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="seafood" id="seafood">
+                  <label class="form-check-label custom-label" for="seafood">
+                  Seafood
+                  </label>
+               </div>
+               <div class="form-check">
+                  <input class="form-check-input custom-button" type="checkbox" value="hotdogs" id="hotdogs">
+                  <label class="form-check-label custom-label" for="hotdogs">
+                  Fast Food
+                  </label>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Search form -->
+<div class="col-md-4">
+    <div class="styled-container">
+        <form id="search-form" class="row">
+            {% csrf_token %}
+            <!-- Address -->
+            <div class="col-12">
+                <label for="address" class="form-label" style="color: #000000; font-weight: bold;">Address</label>
+                <input type="text" class="form-control" id="address" placeholder="Address" style="border-radius: 15.7022px;">
+            </div>
+            <!-- Radius -->
+            <div class="col-12">
+                <label for="radius" class="form-label" style="color: #000000; font-weight: bold;">Radius</label>
+                <select class="form-select" id="radius" style="border-radius: 15.7022px;">
+                    <option value="1609">1 mile</option>
+                    <option value="8047">5 miles</option>
+                    <option value="16093">10 miles</option>
+                    <option value="40000">25 miles</option>
+                </select>
+            </div>
+            <!-- Price/Rating -->
+            <div class="col-12">
+                <label for="price" class="form-label" style="color: #000000; font-weight: bold;">Price/Rating</label>
+                <select class="form-select" id="price" style="border-radius: 15.7022px;">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            <!-- Search Button -->
+            <div class="col-12">
+                <button type="button" class="btn btn-primary mt-4" onclick="searchRestaurants()" style="background: linear-gradient(180deg, #E38F5A 0%, #E09667 100%); border-radius: 15.7022px;">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+      </div>
+      <script>
+         function logoutAndRedirect(url) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '{% url "logout" %}');
+            xhr.setRequestHeader('X-CSRFToken', document.getElementsByName('csrfmiddlewaretoken')[0].value);
+            xhr.onload = function() {
+            window.location.href = url;
+            };
+            xhr.send();
+         }
+         // Create a modal popup with the alert message
+         const modal = document.createElement('div');
+         modal.classList.add('modal');
+
+         const modalContent = document.createElement('div');
+         modalContent.classList.add('modal-content');
+
+         const message = document.createElement('p');
+         message.innerText = 'Please fill out all purr-ferences!!';
+
+         const message2 = document.createElement('p');
+         message2.innerText = 'Meow';
+
+         const closeButton = document.createElement('button');
+         closeButton.classList.add('close-button');
+         closeButton.innerText = 'Close';
+
+         modalContent.appendChild(message);
+         modalContent.appendChild(message2);
+         modalContent.appendChild(closeButton);
+         modal.appendChild(modalContent);
+
+         // Close the modal when the close button is clicked
+         closeButton.addEventListener('click', () => {
+            modal.remove();
+         });
+
+         async function searchRestaurants() {
+         // Validate form fields
+         if (!document.getElementById('address').value ||
+            !document.querySelector('#selectedRestaurants input[type=checkbox]:checked') ||
+            !document.querySelector('#selectedFoodTypes input[type=checkbox]:checked') ||
+            !document.getElementById('radius').value ||
+            !document.getElementById('price').value) {
+            message.innerText = 'Please fill out all purr-ferences!!';
+            document.body.appendChild(modal)
+            return;
+         }
+
+         const token = localStorage.getItem('token');
+         const selectedRestaurants = Array.from(document.querySelectorAll('#selectedRestaurants input[type=checkbox]:checked')).map(checkbox => checkbox.id);
+         const selectedFoodTypes = Array.from(document.querySelectorAll('#selectedFoodTypes input[type=checkbox]:checked')).map(checkbox => checkbox.id);
+
+         const data = {
+            token: token,
+            address: document.getElementById('address').value,
+            selectedRestaurants: selectedRestaurants,
+            selectedFoodTypes: selectedFoodTypes,
+            selectedRadius: document.getElementById('radius').value,
+            selectedPrices: document.getElementById('price').value
+         };
+
+         try {
+            const response = await fetch("/preferences/search/", {
+               method: 'POST',
+               headers: {
+                     'Authorization': 'Token ' + '{{ request.user.auth_token.key }}',
+                     'Content-Type': 'application/json',
+                     "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+               },
+               body: JSON.stringify(data)
+            });
+            if (response.ok) {
+               const restaurantData = await response.json();
+
+               // Redirect to the searchsummary app
+               window.location.href = '/searchsummary/';
+            } else if (response.status === 400) {
+               const errorData = await response.json()
+               const errorMessage = errorData.error.replace(/[\[\]']/g, "");
+               message.innerText = errorMessage;
+               document.body.appendChild(modal)
+            }
+
+         } catch (error) {
+            console.error(error);
+         }
+      }
+
+
+      </script>
+      {% bootstrap_javascript %}
+      {% bootstrap_messages %}
+   </body>
+</html>

@@ -1,0 +1,111 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.9]
+        django-version: [4.1]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Set PYTHONPATH
+      run: echo "export PYTHONPATH=${PYTHONPATH}:${GITHUB_WORKSPACE}" >> $GITHUB_ENV
+    - name: Install Dependencies
+      run: |
+        pip -V
+        python3 -m pip install --upgrade pip
+        sudo apt-get install python3-venv
+        pip install django
+        pip install django pillow
+        pip install coverage
+        sudo apt-get install python3-dev default-libmysqlclient-dev build-essential
+        pip install mysqlclient
+        pip install requests
+        pip install djangorestframework
+        pip install django-bootstrap-v5
+        pip install django-cors-headers
+    - name: Install Flake8
+      run: |
+        pip install flake8
+    - name: Run Flake8 Linter
+      run: |
+        flake8 ./application/WhereWeEatinMeow
+    - name: Generate Pydoc documentation and Commit to current branch
+      run: |
+        export DJANGO_SETTINGS_MODULE=WhereWeEatinMeow.settings
+        export PYTHONPATH=${GITHUB_WORKSPACE}/application/WhereWeEatinMeow
+        set -e
+        cd application/WhereWeEatinMeow
+        python3 generate_pydoc.py
+        set +e
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git fetch origin
+        if [[ $GITHUB_EVENT_NAME == 'pull_request' ]]; then
+          git checkout ${GITHUB_HEAD_REF}
+        else
+          git checkout ${GITHUB_REF#refs/heads/}
+        fi
+        rm -rf WhereWeEatinMeow/__pycache__
+        rm -rf WhereWeEatinMeow/*/__pycache__
+        rm -rf env/
+        git add -A
+        git add -u :/
+        git status
+        git branch --show-current
+        git commit -m "Automatically generated Pydoc documentation" || echo "No changes to commit"
+        if [[ $GITHUB_EVENT_NAME == 'pull_request' ]]; then
+          git push -u origin ${GITHUB_HEAD_REF} || echo "No changes to push"
+        else
+          git push -u origin ${GITHUB_REF#refs/heads/} || echo "No changes to push"
+        fi
+    - name: Run Unit Login and Signup Tests
+      working-directory: application/prototype/
+      run: |
+        python3 manage.py test login -v 3
+    - name: Run Search History Unit Tests
+      working-directory: application/prototype/
+      run: |
+        python3 manage.py test searchhistory -v 3
+    - name: Run Search Summary Unit Tests
+      working-directory: application/prototype/
+      run: |
+        python3 manage.py test searchsummary -v 3
+    - name: Run Preferences Unit Tests
+      working-directory: application/prototype/
+      run: |
+        python3 manage.py test preferences -v3
+    - name: Commit coverage report
+      working-directory: application/prototype/
+      run: |
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git fetch origin
+        if [[ $GITHUB_EVENT_NAME == 'pull_request' ]]; then
+          git checkout ${GITHUB_HEAD_REF}
+        else
+          git checkout ${GITHUB_REF#refs/heads/}
+        fi
+        coverage run --source='.' manage.py test --verbosity=2
+        coverage html
+        git add -f htmlcov/*
+        git commit -m "Add coverage report"
+        if [[ $GITHUB_EVENT_NAME == 'pull_request' ]]; then
+          git push -u origin ${GITHUB_HEAD_REF} || echo "No changes to push"
+        else
+          git push -u origin ${GITHUB_REF#refs/heads/} || echo "No changes to push"
+        fi

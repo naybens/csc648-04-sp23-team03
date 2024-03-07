@@ -1,0 +1,116 @@
+.center-text {
+  text-align: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Background Layer */
+  background-color: rgba(30, 30, 128, 0.3); /* semi-transparent blue */
+  transition: opacity 0.3s ease-in-out;
+}
+
+.bg-image:hover,
+.overlay:hover {
+  opacity: 0;
+}
+
+.full-size {
+  width: 100%;
+  height: 100%;
+}
+
+.white-text {
+  color: white;
+}
+
+.link-below-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* Background link layer */
+}
+
+.link-above-overlay {
+  position: relative;
+  z-index: 3; /* Foreground link layer */
+}
+.google-map-button {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 3px;
+}
+
+/* Wrapper for the restaurant title and ratings */
+.content-wrapper {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  z-index: 2;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.padding-reroll-rating-buttons {
+  padding: 1.5rem;
+}
+.color-background-orange {
+  background-color: #fcf4db;
+}
+
+.info-area-padding {
+  padding: 0.5rem 0.5rem;
+}
+.slight-rounded-borders {
+  border-radius: 5px;
+}
+
+.image-button {
+  display: inline-block;
+  padding: 0.5rem 0.5rem;
+  border: 2px solid black;
+  border-radius: 3px;
+  text-decoration: none;
+  background-image: url("https://csc648whereweeatinmeow.s3.us-west-2.amazonaws.com/background_energy.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: transparent;
+  background-color: orange;
+}
+
+.image-button:hover,
+.buttons-on-the-left {
+  background-color: darkblue;
+  background-image: url("https://csc648whereweeatinmeow.s3.us-west-2.amazonaws.com/energy.svg");
+}
+
+.reroll-button {
+  display: inline-block;
+  padding: 0.5rem 0.5rem;
+  border: 2px solid black;
+  border-radius: 3px;
+  text-decoration: none;
+  color: #91d9f8;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: orange;
+}
+
+.reroll-button:hover {
+  background-color: darkblue;
+}

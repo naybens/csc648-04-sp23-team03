@@ -1,0 +1,37 @@
+<!doctype html>
+{% load static %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Member Detail{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <h2 class="center-align">{{ member.name }}</h2>
+            <div class="row">
+                <div class="col s12 m6 l4">
+                    <div class="card hoverable">
+                        <div class="card-image">
+                            {% if member.image %}
+                                <img src="{{ member.image.url }}" alt="{{ member.name }}" class="responsive-img">
+                            {% else %}
+                                <img src="{% static '../../media/member_images/grumpmonkey.jpeg' %}" alt="default avatar" class="responsive-img">
+                            {% endif %}
+                        </div>
+                        <div class="card-content">
+                            <h4 class="card-title center-align">{{ member.name }}</h4>
+                            <p class="center-align"><strong>{{ member.role }}</strong></p>
+                            <p class="center-align">{{ member.pronouns }}</p>
+                            <p class="center-align">{{ member.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    </body>
+</html>

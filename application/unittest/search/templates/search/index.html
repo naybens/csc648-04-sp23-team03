@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yelp Search</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-gap: 1rem;
+            padding: 1rem;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        button {
+            padding: 0.5rem;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 1rem;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            padding: 1rem;
+            border: 1px solid #ccc;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <label for="preferences">Preferences</label>
+            <input type="text" id="preferences" placeholder="Enter preferences">
+        </div>
+        <div>
+            <label for="price">Price</label>
+            <select id="price">
+                <option value="">Select price</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </div>
+        <div>
+            <label for="location">Location</label>
+            <input type="text" id="location" placeholder="Enter location">
+        </div>
+        <div>
+            <button id="submit-button">Search</button>
+        </div>
+    </div>
+    <div class="result" id="result">
+        <!-- Display the Yelp API result here -->
+    </div>
+
+    <script>
+        const API_KEY = 'vndHDucQHzjlz6eixa0ZVhR6NBjq88gTe0yMArhJTs_N3yes77zweuFmge5B9JAtd6U-kreaLJkQzBVZ3cvbImEwK1AEguDXaVs7JCuFHpepONBMyQ0dN0dOAJAjZHYx'; // Replace with your Yelp API key
+
+        const submitButton = document.getElementById('submit-button');
+        const resultElement = document.getElementById('result');
+
+        submitButton.addEventListener('click', async () => {
+            const preferences = document.getElementById('preferences').value;
+            const price = document.getElementById('price').value;
+            const location = document.getElementById('location').value;
+
+            try {
+                const response = await fetch(`/api/yelp/?term=${preferences}&location=${location}&price=${price}`);
+;
+
+                const data = await response.json();
+
+                if (data.businesses && data.businesses.length > 0) {
+                    const business = data.businesses[0];
+                    resultElement.innerHTML = 
+                    `<h2>${business.name}</h2>
+                    <p>Address: ${business.location.address1}, ${business.location.city}, ${business.location.state}, ${business.location.zip_code}</p>
+                    <p>Phone: ${business.phone}</p>
+                    <p>Rating: ${business.rating} / 5</p>
+                    <a href="${business.url}" target="_blank">View on Yelp</a>
+                    `;
+                } else {
+                    resultElement.innerHTML = '<p>No results found.</p>';
+                }
+
+            } catch (error) {
+                console.error('Error fetching data from Yelp:', error);
+                resultElement.innerHTML = '<p>Error fetching data.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
